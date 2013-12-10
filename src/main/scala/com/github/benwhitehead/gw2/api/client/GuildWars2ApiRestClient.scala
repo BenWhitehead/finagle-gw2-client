@@ -16,30 +16,59 @@
 
 package com.github.benwhitehead.gw2.api.client
 
-import com.twitter.bijection.Injection
+import com.fasterxml.jackson.core.`type`.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.twitter.conversions.time.intToTimeableNumber
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.http.Http
 import com.twitter.finagle.{SimpleFilter, Service}
 import com.twitter.util.{Duration, Future}
+import java.lang.reflect.{Type, ParameterizedType}
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
 import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
 import org.jboss.netty.util.CharsetUtil._
 import scala.Exception
-import scala.util.Success
-import scala.util._
+
 
 /**
  * @author Ben Whitehead
  */
 class GuildWars2ApiRestClient(client: Service[HttpRequest, HttpResponse]) {
 
-  def apply[T](httpRequest: HttpRequest)(implicit bij: Injection[T, String]): Future[T] = {
-    client(httpRequest) flatMap { response =>
-      bij.invert(response.getContent.toString(UTF_8)) match {
-        case Success(t) => Future.value(t)
-        case Failure(e) => throw new IllegalStateException(s"Response Parsing Failed", e)
+  /**
+   * Found at http://stackoverflow.com/a/14166997
+   */
+  object JacksonWrapper {
+    val mapper = new ObjectMapper().registerModule(DefaultScalaModule)
+
+    def serialize(value: Any): String = {
+      import java.io.StringWriter
+      val writer = new StringWriter()
+      mapper.writeValue(writer, value)
+      writer.toString
+    }
+
+    def deserialize[T: Manifest](value: String) : T =
+      mapper.readValue(value, typeReference[T])
+
+    private [this] def typeReference[T: Manifest] = new TypeReference[T] {
+      override def getType = typeFromManifest(manifest[T])
+    }
+
+    private [this] def typeFromManifest(m: Manifest[_]): Type = {
+      if (m.typeArguments.isEmpty) { m.erasure }
+      else new ParameterizedType {
+        def getRawType = m.erasure
+        def getActualTypeArguments = m.typeArguments.map(typeFromManifest).toArray
+        def getOwnerType = null
       }
+    }
+  }
+
+  def apply[T: Manifest](httpRequest: HttpRequest): Future[T] = {
+    client(httpRequest) flatMap { response =>
+      Future.value(JacksonWrapper.deserialize[T](response.getContent.toString(UTF_8)))
     }
   }
 

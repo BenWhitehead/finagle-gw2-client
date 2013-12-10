@@ -17,6 +17,7 @@
 package com.github.benwhitehead.gw2.api.model
 
 import java.util.UUID
+import com.fasterxml.jackson.annotation.JsonProperty
 
 /**
  * @author Ben Whitehead
@@ -24,16 +25,16 @@ import java.util.UUID
 class Item(
   val description: String,
   val flags: List[String],
-  val gameTypes: List[String],
-  val iconFileId: Int,
-  val iconFileSignature: String,
-  val itemId: Int,
+  @JsonProperty("game_types") val gameTypes: List[String],
+  @JsonProperty("icon_file_id") val iconFileId: Int,
+  @JsonProperty("icon_file_signature") val iconFileSignature: String,
+  @JsonProperty("item_id") val itemId: Int,
   val level: Int,
   val name: String,
   val rarity: String,
   val restrictions: List[String],
-  val itemType: String,
-  val vendorValue: Int,
+  @JsonProperty("type") val itemType: String,
+  @JsonProperty("vendor_value") val vendorValue: Int,
   val armor: ItemInfo,
   val back: ItemInfo,
   val bag: ItemInfo,
@@ -44,31 +45,31 @@ class Item(
   val gizmo: ItemInfo,
   val tool: ItemInfo,
   val trinket: ItemInfo,
-  val upgradeComponent: ItemInfo,
+  @JsonProperty("upgrade_component") val upgradeComponent: ItemInfo,
   val weapon: ItemInfo
 )
 
 case class ItemInfo(
-  damageType: String,
+  @JsonProperty("damage_type") damageType: String,
   defense: Int,
   suffix: String,
-  suffixItemId: Int,
-  `type`: String,
-  weightClass: String,
-  infusionSlots: List[InfusionSlot],
-  infixUpgrade: InfixUpgrade,
-  infusionUpgradeFlags: List[String],
-  minPower: Int,
-  maxPower: Int,
-  noSellOrSort: Int,
+  @JsonProperty("suffix_item_id") suffixItemId: Int,
+  @JsonProperty("type") `type`: String,
+  @JsonProperty("weight_class") weightClass: String,
+  @JsonProperty("infusion_slots") infusionSlots: List[InfusionSlot],
+  @JsonProperty("infix_upgrade") infixUpgrade: InfixUpgrade,
+  @JsonProperty("infusion_upgrade_flags") infusionUpgradeFlags: List[String],
+  @JsonProperty("min_power") minPower: Int,
+  @JsonProperty("max_power") maxPower: Int,
+  @JsonProperty("no_sell_or_sort") noSellOrSort: Int,
   size: Int,
   bonuses: List[String],
   flags: List[String],
-  colorId: Int,
-  unlockType: String,
-  durationMs: Int,
+  @JsonProperty("color_id") colorId: Int,
+  @JsonProperty("unlock_type") unlockType: String,
+  @JsonProperty("duration_ms") durationMs: Int,
   description: String,
-  recipeId: Int,
+  @JsonProperty("recipe_id") recipeId: Int,
   charges: Int
 )
 
@@ -86,13 +87,13 @@ case class InfusionSlot(flags: List[String])
 
 case class Buff(
   description: String,
-  skillId: Int
+  @JsonProperty("skill_id") skillId: Int
 )
 
 case class Event(
-  worldId: Int,
-  mapId: Int,
-  eventId: UUID,
+  @JsonProperty("world_id") worldId: Int,
+  @JsonProperty("map_id") mapId: Int,
+  @JsonProperty("event_id") eventId: UUID,
   state: String
 )
 
@@ -100,17 +101,17 @@ case class Recipe(
   disciplines: List[String],
   flags: List[String],
   ingredients: List[Ingredient],
-  minRating: Int,
-  outputItemCount: Int,
-  outputItemId: Int,
-  recipeId: Int,
-  timeToCraftMs: Int,
-  itemType: String
+  @JsonProperty("min_rating") minRating: Int,
+  @JsonProperty("output_item_count") outputItemCount: Int,
+  @JsonProperty("output_item_id") outputItemId: Int,
+  @JsonProperty("recipe_id") recipeId: Int,
+  @JsonProperty("time_to_craft_ms") timeToCraftMs: Int,
+  @JsonProperty("type") itemType: String
 )
 
 case class Ingredient(
   count: Int,
-  itemId: Int
+  @JsonProperty("item_id") itemId: Int
 )
 
 case class World(
