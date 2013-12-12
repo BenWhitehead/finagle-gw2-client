@@ -83,7 +83,7 @@ case class Attribute(
   modifier: Int
 )
 
-case class InfusionSlot(flags: List[String])
+case class InfusionSlot(flags: List[String], @JsonProperty("item_id") itemId: Int)
 
 case class Buff(
   description: String,
@@ -118,3 +118,7 @@ case class World(
   id: Int,
   name: String
 )
+
+case class Items(items: Seq[Int])
+case class Recipes(recipes: Seq[Int])
+case class Events(events: Seq[Event])
