@@ -28,7 +28,7 @@ class Item(
   @JsonProperty("game_types") val gameTypes: List[String],
   @JsonProperty("icon_file_id") val iconFileId: Int,
   @JsonProperty("icon_file_signature") val iconFileSignature: String,
-  @JsonProperty("item_id") val itemId: Int,
+  @JsonProperty("item_id") val id: Int,
   val level: Int,
   val name: String,
   val rarity: String,

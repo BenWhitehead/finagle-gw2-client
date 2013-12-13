@@ -16,9 +16,9 @@
 
 package com.github.benwhitehead.gw2.api.client
 
-import org.scalatest.FreeSpec
-import com.twitter.util.{Await, Future, Stopwatch}
 import com.github.benwhitehead.gw2.api.model.Item
+import com.twitter.util.{Await, Future, Stopwatch}
+import org.scalatest.FreeSpec
 
 /**
  * @author Ben Whitehead

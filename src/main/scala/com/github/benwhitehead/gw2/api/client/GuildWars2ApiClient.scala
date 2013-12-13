@@ -30,28 +30,24 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
   val badItemIds = Set(43949, 43948)
 
   def fetchAllRecipeDetails(): Future[Seq[Recipe]] = {
-    println(s"fetchAllRecipeDetails()")
     client[Recipes](rf.getRecipes) flatMap {
       case r: Recipes => fetchRecipes(r.recipes)
     }
   }
 
   def fetchItemIds(): Future[Seq[Int]] = {
-    println(s"fetchItemIds()")
     client[Items](rf.getItems) flatMap {
       case i: Items => Future.value(i.items filter { i => !badItemIds(i) })
     }
   }
 
   def fetchAllItemDetails(): Future[Seq[Item]] = {
-    println("fetchAllItemDetails()")
     fetchItemIds() flatMap {
       case itemIds: Seq[Int] => fetchItems(itemIds)
     }
   }
 
   def fetchRecipes(recipeIds: Seq[Int]): Future[Seq[Recipe]] = {
-    println(s"fetchRecipes(recipeIds = $recipeIds)")
     Future.collect(
       recipeIds map {
         id => fetchRecipeDetails(id)
@@ -60,12 +56,10 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
   }
 
   def fetchRecipeDetails(recipeId: Int): Future[Recipe] = {
-    println(s"fetchRecipeDetails(recipeId = $recipeId)")
     client[Recipe](rf.getRecipeDetails(recipeId))
   }
 
   def fetchItems(itemIds: Seq[Int]): Future[Seq[Item]] = {
-    println(s"fetchItems(itemIds = $itemIds)")
     Future.collect(
       itemIds map {
         id => fetchItemDetails(id)
@@ -74,17 +68,14 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
   }
 
   def fetchItemDetails(itemId: Int): Future[Item] = {
-    println(s"fetchItemDetails(itemId = $itemId)")
     client[Item](rf.getItemDetails(itemId))
   }
 
   def fetchAllWorlds(): Future[Seq[World]] = {
-    println(s"fetchAllWorlds()")
     client[Seq[World]](rf.getWorldNames)
   }
 
   def fetchAllEvents(worldId: Int): Future[Seq[Event]] = {
-    println(s"fetchAllEvents(worldId = $worldId)")
     client[Events](rf.getEventsForWorld(worldId)) flatMap {
       case e: Events =>
         Future.value(e.events)
