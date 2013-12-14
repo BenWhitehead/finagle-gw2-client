@@ -16,7 +16,6 @@
 
 package com.github.benwhitehead.gw2.api.client
 
-import com.twitter.bijection.Injection
 import com.twitter.conversions.time.intToTimeableNumber
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.http.Http
@@ -26,20 +25,15 @@ import org.jboss.netty.handler.codec.http.HttpResponseStatus._
 import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
 import org.jboss.netty.util.CharsetUtil._
 import scala.Exception
-import scala.util.Success
-import scala.util._
 
 /**
  * @author Ben Whitehead
  */
 class GuildWars2ApiRestClient(client: Service[HttpRequest, HttpResponse]) {
 
-  def apply[T](httpRequest: HttpRequest)(implicit bij: Injection[T, String]): Future[T] = {
+  def apply[T: Manifest](httpRequest: HttpRequest): Future[T] = {
     client(httpRequest) flatMap { response =>
-      bij.invert(response.getContent.toString(UTF_8)) match {
-        case Success(t) => Future.value(t)
-        case Failure(e) => throw new IllegalStateException(s"Response Parsing Failed", e)
-      }
+      Future.value(JacksonWrapper.deserialize[T](response.getContent.toString(UTF_8)))
     }
   }
 
@@ -72,7 +66,8 @@ object GuildWars2ApiRestClient {
     new GuildWars2ApiRestClient(new HandleErrors andThen builder.build()) releaseOnShutdown()
   }
 
-  class InvalidRequest extends Exception
+  class BadRequest extends Exception
+  class ForbiddenRequest extends Exception
 
   /**
    * Convert HTTP 4xx and 5xx class responses into Exceptions.
@@ -81,9 +76,10 @@ object GuildWars2ApiRestClient {
     def apply(request: HttpRequest, service: Service[HttpRequest, HttpResponse]) = {
       service(request) flatMap { response =>
         response.getStatus match {
-          case OK        => Future.value(response)
-          case FORBIDDEN => Future.exception(new InvalidRequest)
-          case _         => Future.exception(new Exception(response.getStatus.getReasonPhrase))
+          case OK          => Future.value(response)
+          case BAD_REQUEST => Future.exception(new BadRequest)
+          case FORBIDDEN   => Future.exception(new ForbiddenRequest)
+          case _           => Future.exception(new Exception(response.getStatus.getReasonPhrase))
         }
       }
     }

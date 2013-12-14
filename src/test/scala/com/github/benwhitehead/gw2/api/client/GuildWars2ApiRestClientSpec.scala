@@ -35,11 +35,10 @@ class GuildWars2ApiRestClientSpec extends FreeSpec {
       }
     }
 
-    "bijection" - {
-      import com.github.benwhitehead.gw2.api.model.ApiModelJsonBijections._
+    "deserialize" - {
       "World" in {
-        val worlds = r(client[World](rf.getWorldNames)) onSuccess {
-          case world: World => println(world)
+        val worlds = r(client[List[World]](rf.getWorldNames)) onSuccess {
+          case worlds: List[World] => println(worlds.mkString(", "))
         }
         Await.all(worlds)
       }
