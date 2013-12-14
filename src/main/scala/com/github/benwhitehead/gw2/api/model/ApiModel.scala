@@ -218,6 +218,21 @@ case class WorldMapFloorMap(
   @JsonProperty("sectors") sectors: List[Sector]
 )
 
+case class GuildDetails(
+  @JsonProperty("guild_id") id: UUID,
+  @JsonProperty("guild_name") name: String,
+  @JsonProperty("tag") tag: String,
+  @JsonProperty("emblem") emblem: Emblem
+)
+case class Emblem(
+  @JsonProperty("background_id") backgroundId: Int,
+  @JsonProperty("foreground_id") foregroundId: Int,
+  @JsonProperty("flags") flags: List[Int],
+  @JsonProperty("background_color_id") backgroundColorId: Int,
+  @JsonProperty("foreground_primary_color_id") foregroundPrimaryColorId: Int,
+  @JsonProperty("foreground_secondary_color_id") foregroundSecondaryColorId: Int
+)
+
 trait Unwrappable[U] {
   def flatMap: U
 }

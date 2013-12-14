@@ -72,4 +72,9 @@ class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:
   def getEventsForMap(mapId: Int)                           = get("/events.json" ? ("map_id" -> mapId))
   def getEventsForWorld(eventId: UUID, worldId: Int)        = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId))
   def getEventsForMap(eventId: UUID, mapId: Int)            = get("/events.json" ? ("event_id" -> eventId) & ("map_id" -> mapId))
+
+  /* ----- Guilds ----- */
+  def getGuildDetails(guildId: UUID)                        = get("/guild_details.json" ? ("guild_id" -> guildId))
+  def getGuildDetails(guildName: String)                    = get("/guild_details.json" ? ("guild_name" -> guildName))
+
 }

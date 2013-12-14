@@ -140,6 +140,15 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     unwrap(client[Events](rf.getEventsForMap(eventId, mapId)))
   }
 
+  // -------------- Guilds ----------------------------------------------------
+
+  def fetchGuildDetails(guildName: String): Future[GuildDetails] = {
+    client[GuildDetails](rf.getGuildDetails(guildName))
+  }
+  def fetchGuildDetails(guildId: UUID): Future[GuildDetails] = {
+    client[GuildDetails](rf.getGuildDetails(guildId))
+  }
+
   private def unwrap[U](f: Future[Unwrappable[U]]): Future[U] = f flatMap {
     case u: Unwrappable[U] => Future.value(u.flatMap)
   }

@@ -19,11 +19,14 @@ package com.github.benwhitehead.gw2.api.client
 import com.github.benwhitehead.gw2.api.model._
 import com.twitter.util.{Await, Future, Stopwatch}
 import org.scalatest.FreeSpec
+import java.util.UUID
 
 /**
  * @author Ben Whitehead
  */
 class GuildWars2ApiClientSpec extends FreeSpec {
+  implicit def uuid(uuid: String): UUID = UUID.fromString(uuid)
+
   "Guild Wars 2 Api Client should" - {
     val client = new GuildWars2ApiClient(
       GuildWars2ApiRestClient(hostConnectionLimit = 30),
@@ -74,6 +77,25 @@ class GuildWars2ApiClientSpec extends FreeSpec {
             assert(lionsArch.sectors.size > 0)
         }
         Await.result(f)
+      }
+
+      "Guild Details" - {
+        "by id" in {
+          val f = client.fetchGuildDetails(uuid("75FD83CF-0C45-4834-BC4C-097F93A487AF")) onSuccess {
+            case guild =>
+              assert(guild.name === "Veterans Of Lions Arch")
+              assert(guild.tag === "LA")
+          }
+          Await.result(f)
+        }
+        "by name" in {
+          val f = client.fetchGuildDetails("Veterans Of Lions Arch") onSuccess {
+            case guild =>
+              assert(guild.id === uuid("75FD83CF-0C45-4834-BC4C-097F93A487AF"))
+              assert(guild.tag === "LA")
+          }
+          Await.result(f)
+        }
       }
     }
 
