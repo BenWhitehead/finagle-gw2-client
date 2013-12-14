@@ -97,6 +97,34 @@ class GuildWars2ApiClientSpec extends FreeSpec {
           Await.result(f)
         }
       }
+      
+      "World vs World" - {
+        "matches" in {
+          val f = client.fetchWorldVsWorldMatches() onSuccess {
+            case matches =>
+              assert(!matches.isEmpty)
+          }
+          Await.result(f)
+        }
+        "match details" in {
+          val f = client.fetchWorldVsWorldMatchDetails("1-4") onSuccess {
+            case matchDetails =>
+              assert(matchDetails.scores.size === 3)
+              assert(!matchDetails.maps.isEmpty)
+          }
+          Await.result(f)
+        }
+        "objective names" in {
+          val f = client.fetchWorldVsWorldObjectNames() onSuccess {
+            case objectiveNames =>
+            objectiveNames.find { o => o.id == 30 } match {
+              case Some(WorldVsWorldObjectName(30, "Tower")) => assert(true === true) // success
+              case _ => fail()
+            }
+          }
+          Await.result(f)
+        }
+      }
     }
 
     "script" in {

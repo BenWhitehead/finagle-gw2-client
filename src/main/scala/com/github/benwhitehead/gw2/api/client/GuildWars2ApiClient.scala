@@ -149,6 +149,20 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     client[GuildDetails](rf.getGuildDetails(guildId))
   }
 
+  // -------------- Guilds ----------------------------------------------------
+
+  def fetchWorldVsWorldMatches(): Future[Seq[WorldVsWorldMatch]] = {
+    unwrap(client[WorldVsWorldMatches](rf.getWvwMatches))
+  }
+
+  def fetchWorldVsWorldMatchDetails(matchId: String): Future[WorldVsWorldMatchDetails] = {
+    client[WorldVsWorldMatchDetails](rf.getWvwMatchDetails(matchId))
+  }
+
+  def fetchWorldVsWorldObjectNames(): Future[Seq[WorldVsWorldObjectName]] = {
+    client[Seq[WorldVsWorldObjectName]](rf.getWvwObjectiveNames)
+  }
+
   private def unwrap[U](f: Future[Unwrappable[U]]): Future[U] = f flatMap {
     case u: Unwrappable[U] => Future.value(u.flatMap)
   }
