@@ -18,36 +18,25 @@ package com.github.benwhitehead.gw2.api.client
 
 import com.github.benwhitehead.gw2.api.model._
 import com.twitter.util.Future
+import java.util.UUID
 
 /**
  * @author Ben Whitehead
  */
 class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequestFactory) {
 
-  /**
-   * These cause 500's
-   */
-  val badItemIds = Set(43949, 43948)
+  // -------------- Recipes ---------------------------------------------------
 
+  def fetchRecipeIds(): Future[Seq[Int]] = {
+    unwrap(client[Recipes](rf.getRecipes))
+  }
   def fetchAllRecipeDetails(): Future[Seq[Recipe]] = {
-    client[Recipes](rf.getRecipes) flatMap {
-      case r: Recipes => fetchRecipes(r.recipes)
+    fetchRecipeIds() flatMap {
+      case recipeIds: Seq[Int] => fetchRecipeDetails(recipeIds)
     }
   }
 
-  def fetchItemIds(): Future[Seq[Int]] = {
-    client[Items](rf.getItems) flatMap {
-      case i: Items => Future.value(i.items filter { i => !badItemIds(i) })
-    }
-  }
-
-  def fetchAllItemDetails(): Future[Seq[Item]] = {
-    fetchItemIds() flatMap {
-      case itemIds: Seq[Int] => fetchItems(itemIds)
-    }
-  }
-
-  def fetchRecipes(recipeIds: Seq[Int]): Future[Seq[Recipe]] = {
+  def fetchRecipeDetails(recipeIds: Seq[Int]): Future[Seq[Recipe]] = {
     Future.collect(
       recipeIds map {
         id => fetchRecipeDetails(id)
@@ -59,7 +48,21 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     client[Recipe](rf.getRecipeDetails(recipeId))
   }
 
-  def fetchItems(itemIds: Seq[Int]): Future[Seq[Item]] = {
+  // -------------- Items -----------------------------------------------------
+
+  def fetchItemIds()(implicit badItemIds: Set[Int] = Set(43949, 43948)): Future[Seq[Int]] = {
+    unwrap(client[Items](rf.getItems)) flatMap {
+      case ids: Seq[Int] => Future.value(ids filter { i => !badItemIds(i) })
+    }
+  }
+
+  def fetchAllItemDetails(): Future[Seq[Item]] = {
+    fetchItemIds() flatMap {
+      case itemIds: Seq[Int] => fetchItemDetails(itemIds)
+    }
+  }
+
+  def fetchItemDetails(itemIds: Seq[Int]): Future[Seq[Item]] = {
     Future.collect(
       itemIds map {
         id => fetchItemDetails(id)
@@ -71,15 +74,74 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     client[Item](rf.getItemDetails(itemId))
   }
 
+  // -------------- Worlds ----------------------------------------------------
+
   def fetchAllWorlds(): Future[Seq[World]] = {
     client[Seq[World]](rf.getWorldNames)
   }
 
-  def fetchAllEvents(worldId: Int): Future[Seq[Event]] = {
-    client[Events](rf.getEventsForWorld(worldId)) flatMap {
-      case e: Events =>
-        Future.value(e.events)
-    }
+  // -------------- Maps ------------------------------------------------------
+
+  def fetchMapNames(): Future[Seq[MapName]] = {
+    client[Seq[MapName]](rf.getWorldNames)
+  }
+
+  def fetchContinents(): Future[Map[Int, Continent]] = {
+    unwrap(client[Continents](rf.getContinents))
+  }
+
+  def fetchMaps(): Future[Map[Int, WorldMap]] = {
+    unwrap(client[WorldMaps](rf.getMaps))
+  }
+  def fetchMaps(mapId: Int): Future[Map[Int, WorldMap]] = {
+    unwrap(client[WorldMaps](rf.getMaps(mapId)))
+  }
+
+  def fetchMapFloor(continentId: Int, floor: Int): Future[WorldMapFloor] = {
+    client[WorldMapFloor](rf.getMapFloor(continentId, floor))
+  }
+
+  // -------------- Events ----------------------------------------------------
+
+  def fetchEventNames(): Future[Seq[EventName]] = {
+    client[Seq[EventName]](rf.getEventNames)
+  }
+
+  def fetchEventDetails(): Future[Map[UUID, EventDetails]] = {
+    client[Map[UUID, EventDetails]](rf.getEventDetails)
+  }
+  def fetchEventDetails(eventId: UUID): Future[Map[UUID, EventDetails]] = {
+    client[Map[UUID, EventDetails]](rf.getEventDetails(eventId))
+  }
+
+  def fetchEvents(): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEvents))
+  }
+  def fetchEvents(eventId: UUID): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEvents(eventId)))
+  }
+  def fetchEvents(eventId: UUID, worldId: Int, mapId: Int): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEvents(eventId, worldId, mapId)))
+  }
+  def fetchEvents(worldId: Int, mapId: Int): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEvents(worldId, mapId)))
+  }
+
+  def fetchEventsForWorld(worldId: Int): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEventsForWorld(worldId)))
+  }
+  def fetchEventsForMap(mapId: Int): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEventsForMap(mapId)))
+  }
+  def fetchEventsForWorld(eventId: UUID, worldId: Int): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEventsForWorld(eventId, worldId)))
+  }
+  def fetchEventsForMap(eventId: UUID, mapId: Int): Future[Seq[Event]] = {
+    unwrap(client[Events](rf.getEventsForMap(eventId, mapId)))
+  }
+
+  private def unwrap[U](f: Future[Unwrappable[U]]): Future[U] = f flatMap {
+    case u: Unwrappable[U] => Future.value(u.flatMap)
   }
 }
 

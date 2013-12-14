@@ -16,7 +16,7 @@
 
 package com.github.benwhitehead.gw2.api.client
 
-import com.github.benwhitehead.gw2.api.model.Item
+import com.github.benwhitehead.gw2.api.model._
 import com.twitter.util.{Await, Future, Stopwatch}
 import org.scalatest.FreeSpec
 
@@ -32,41 +32,46 @@ class GuildWars2ApiClientSpec extends FreeSpec {
 
     "fetch" - {
       "events for world 1015" in {
-        val time = Stopwatch.start()
-        val f = client.fetchAllEvents(1015) onSuccess {
+        val f = client.fetchEventsForWorld(1015) onSuccess {
           case events =>
             println(s"events.size = ${events.size}")
-            println(time())
         }
         Await.result(f)
       }
 
       "worlds" in {
-        val time = Stopwatch.start()
         val f = client.fetchAllWorlds() onSuccess {
           case worlds =>
             println(s"worlds.size = ${worlds.size}")
-            println(time())
         }
         Await.result(f)
       }
 
       "items" in {
-        val time = Stopwatch.start()
         val f = client.fetchAllItemDetails() onSuccess {
           case items: Seq[Item] =>
             println(s"items.size = ${items.size}")
-            println(time())
         }
         Await.result(f)
       }
 
       "recipes" in {
-        val time = Stopwatch.start()
         val f = client.fetchAllRecipeDetails() onSuccess {
           case recipes =>
             println(s"recipes.size = ${recipes.size}")
-            println(time())
+        }
+        Await.result(f)
+      }
+
+      "map floor [continentId = 1, floor = 1]" in {
+        val f = client.fetchMapFloor(1, 1) onSuccess {
+          case mapFloor =>
+            val regions = mapFloor.regions
+            assert(regions.size === 6)
+            val kryta = regions.find { t: (Int, WorldRegion) => t._2.name == "Kryta" }.get._2
+            val lionsArch = kryta.maps.find { e: (Int, WorldMapFloorMap) => e._2.name == "Lion's Arch" }.get._2
+            assert(lionsArch.pointsOfInterest.size > 0)
+            assert(lionsArch.sectors.size > 0)
         }
         Await.result(f)
       }
@@ -78,7 +83,7 @@ class GuildWars2ApiClientSpec extends FreeSpec {
         client.fetchAllRecipeDetails(),
         client.fetchAllItemDetails(),
         client.fetchAllWorlds(),
-        client.fetchAllEvents(1015)
+        client.fetchEventsForWorld(1015)
       ) flatMap {
         case (recipes, items, worlds, events) =>
           Future.value((recipes, items, worlds, events))

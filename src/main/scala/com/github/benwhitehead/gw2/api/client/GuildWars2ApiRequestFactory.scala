@@ -19,6 +19,7 @@ package com.github.benwhitehead.gw2.api.client
 import com.github.theon.uri.Uri
 import com.github.theon.uri.Uri._
 import com.twitter.finagle.http.RequestBuilder
+import java.util.UUID
 
 /**
  * @see http://wiki.guildwars2.com/wiki/API
@@ -60,15 +61,15 @@ class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:
   def getEventNames                                         = get("/event_names.json")
 
   def getEventDetails                                       = get("/event_details.json")
-  def getEventDetails(eventId: Int)                         = get("/event_details.json" ? ("event_id" -> eventId))
+  def getEventDetails(eventId: UUID)                        = get("/event_details.json" ? ("event_id" -> eventId))
 
   def getEvents                                             = get("/events.json")
-  def getEvents(eventId: String)                            = get("/events.json" ? ("event_id" -> eventId))
-  def getEvents(eventId: String, worldId: Int, mapId: Int)  = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId) & ("map_id" -> mapId))
+  def getEvents(eventId: UUID)                              = get("/events.json" ? ("event_id" -> eventId))
+  def getEvents(eventId: UUID, worldId: Int, mapId: Int)    = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId) & ("map_id" -> mapId))
   def getEvents(worldId: Int, mapId: Int)                   = get("/events.json" ? ("world_id" -> worldId) & ("map_id" -> mapId))
 
   def getEventsForWorld(worldId: Int)                       = get("/events.json" ? ("world_id" -> worldId))
   def getEventsForMap(mapId: Int)                           = get("/events.json" ? ("map_id" -> mapId))
-  def getEventsForWorld(eventId: String, worldId: Int)      = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId))
-  def getEventsForMap(eventId: String, mapId: Int)          = get("/events.json" ? ("event_id" -> eventId) & ("map_id" -> mapId))
+  def getEventsForWorld(eventId: UUID, worldId: Int)        = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId))
+  def getEventsForMap(eventId: UUID, mapId: Int)            = get("/events.json" ? ("event_id" -> eventId) & ("map_id" -> mapId))
 }
