@@ -17,9 +17,9 @@
 package com.github.benwhitehead.gw2.api.client
 
 import com.github.benwhitehead.gw2.api.model._
-import com.twitter.util.{Await, Future, Stopwatch}
-import org.scalatest.FreeSpec
+import com.twitter.util.Await
 import java.util.UUID
+import org.scalatest.FreeSpec
 
 /**
  * @author Ben Whitehead
@@ -34,51 +34,6 @@ class GuildWars2ApiClientSpec extends FreeSpec {
     )
 
     "fetch" - {
-      "events for world 1015" in {
-        val f = client.fetchEventsForWorld(1015) onSuccess {
-          case events =>
-            println(s"events.size = ${events.size}")
-        }
-        Await.result(f)
-      }
-
-      "worlds" in {
-        val f = client.fetchAllWorlds() onSuccess {
-          case worlds =>
-            println(s"worlds.size = ${worlds.size}")
-        }
-        Await.result(f)
-      }
-
-      "items" in {
-        val f = client.fetchAllItemDetails() onSuccess {
-          case items: Seq[Item] =>
-            println(s"items.size = ${items.size}")
-        }
-        Await.result(f)
-      }
-
-      "recipes" in {
-        val f = client.fetchAllRecipeDetails() onSuccess {
-          case recipes =>
-            println(s"recipes.size = ${recipes.size}")
-        }
-        Await.result(f)
-      }
-
-      "map floor [continentId = 1, floor = 1]" in {
-        val f = client.fetchMapFloor(1, 1) onSuccess {
-          case mapFloor =>
-            val regions = mapFloor.regions
-            assert(regions.size === 6)
-            val kryta = regions.find { t: (Int, WorldRegion) => t._2.name == "Kryta" }.get._2
-            val lionsArch = kryta.maps.find { e: (Int, WorldMapFloorMap) => e._2.name == "Lion's Arch" }.get._2
-            assert(lionsArch.pointsOfInterest.size > 0)
-            assert(lionsArch.sectors.size > 0)
-        }
-        Await.result(f)
-      }
-
       "Guild Details" - {
         "by id" in {
           val f = client.fetchGuildDetails(uuid("75FD83CF-0C45-4834-BC4C-097F93A487AF")) onSuccess {
@@ -97,7 +52,7 @@ class GuildWars2ApiClientSpec extends FreeSpec {
           Await.result(f)
         }
       }
-      
+
       "World vs World" - {
         "matches" in {
           val f = client.fetchWorldVsWorldMatches() onSuccess {
@@ -117,35 +72,59 @@ class GuildWars2ApiClientSpec extends FreeSpec {
         "objective names" in {
           val f = client.fetchWorldVsWorldObjectNames() onSuccess {
             case objectiveNames =>
-            objectiveNames.find { o => o.id == 30 } match {
-              case Some(WorldVsWorldObjectName(30, "Tower")) => assert(true === true) // success
-              case _ => fail()
-            }
+              objectiveNames.find { o => o.id == 30 } match {
+                case Some(WorldVsWorldObjectName(30, "Tower")) => assert(true === true) // success
+                case _ => fail()
+              }
           }
           Await.result(f)
         }
       }
-    }
 
-    "script" in {
-      val time = Stopwatch.start()
-      val f = Future.join(
-        client.fetchAllRecipeDetails(),
-        client.fetchAllItemDetails(),
-        client.fetchAllWorlds(),
-        client.fetchEventsForWorld(1015)
-      ) flatMap {
-        case (recipes, items, worlds, events) =>
-          Future.value((recipes, items, worlds, events))
-      } onSuccess {
-        case (recipes, items, worlds, events) =>
-          println(s"recipes.size = ${recipes.size}")
-          println(s"items.size = ${items.size}")
-          println(s"worlds.size = ${worlds.size}")
-          println(s"events.size = ${events.size}")
-          println(time())
+      "events for world 1015" in {
+        val f = client.fetchEventsForWorld(1015) onSuccess {
+          case events =>
+            println(s"events.size = ${events.size}")
+        }
+        Await.result(f)
       }
-      Await.result(f)
+
+      "worlds" in {
+        val f = client.fetchAllWorlds() onSuccess {
+          case worlds =>
+            println(s"worlds.size = ${worlds.size}")
+        }
+        Await.result(f)
+      }
+
+      "map floor [continentId = 1, floor = 1]" in {
+        val f = client.fetchMapFloor(1, 1) onSuccess {
+          case mapFloor =>
+            val regions = mapFloor.regions
+            assert(regions.size === 6)
+            val kryta = regions.find { t: (Int, WorldRegion) => t._2.name == "Kryta" }.get._2
+            val lionsArch = kryta.maps.find { e: (Int, WorldMapFloorMap) => e._2.name == "Lion's Arch" }.get._2
+            assert(lionsArch.pointsOfInterest.size > 0)
+            assert(lionsArch.sectors.size > 0)
+        }
+        Await.result(f)
+      }
+
+      "recipes" in {
+        val f = client.fetchAllRecipeDetails() onSuccess {
+          case recipes =>
+            println(s"recipes.size = ${recipes.size}")
+        }
+        Await.result(f)
+      }
+
+      "items" in {
+        val f = client.fetchAllItemDetails() onSuccess {
+          case items: Seq[Item] =>
+            println(s"items.size = ${items.size}")
+        }
+        Await.result(f)
+      }
     }
   }
 }
