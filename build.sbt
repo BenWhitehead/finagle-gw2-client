@@ -15,11 +15,7 @@ javacOptions in doc := Seq("-source", "1.6")
 resolvers += "Twitter" at "http://maven.twttr.com/"
 
 libraryDependencies ++= Seq(
-  "com.twitter"                   % "finagle-http_2.10"           % "6.9.0"   excludeAll(
-      ExclusionRule(organization = "org.scala-tools.testing"),
-      ExclusionRule(organization = "junit"),
-      ExclusionRule(organization = "org.mockito")
-    ),
+  "com.twitter"                   % "finagle-http_2.10"           % "6.10.0",
   "com.fasterxml.jackson.module"  % "jackson-module-scala_2.10"   % "2.3.0",
   "com.github.theon"              %% "scala-uri"                  % "0.3.6",
   "org.scalatest"                 %% "scalatest"                  % "2.0"     % "test"
