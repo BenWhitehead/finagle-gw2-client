@@ -27,9 +27,6 @@ case class File(
   @JsonProperty("signature") signature: String
 )
 
-case class Colors(@JsonProperty("colors") colors: Map[String, ColorDefinition]) extends Unwrappable[Map[String, ColorDefinition]] {
-  def flatMap = colors
-}
 case class ColorDefinition(
   @JsonProperty("name") name: String,
   @JsonProperty("base_rgb") baseRgb: List[Int],

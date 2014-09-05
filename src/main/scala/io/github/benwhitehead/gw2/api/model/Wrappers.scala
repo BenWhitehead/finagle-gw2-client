@@ -42,3 +42,6 @@ case class WorldMaps(maps: Map[Int, WorldMap]) extends Unwrappable[Map[Int, Worl
 case class WorldVsWorldMatches(@JsonProperty("wvw_matches") matches: List[WorldVsWorldMatch]) extends Unwrappable[List[WorldVsWorldMatch]] {
   def flatMap = matches
 }
+case class Colors(colors: Map[String, ColorDefinition]) extends Unwrappable[Map[String, ColorDefinition]] {
+  def flatMap = colors
+}
