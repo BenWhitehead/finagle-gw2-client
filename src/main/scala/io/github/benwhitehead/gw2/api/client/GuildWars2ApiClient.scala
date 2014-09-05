@@ -84,8 +84,8 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     unwrap(client[Colors](rf.getColors))
   }
 
-  def fetchFiles(): Future[Files] = {
-    client[Files](rf.getFiles)
+  def fetchFiles(): Future[Map[String, File]] = {
+    client[Map[String, File]](rf.getFiles)
   }
 
   // -------------- Worlds ----------------------------------------------------
