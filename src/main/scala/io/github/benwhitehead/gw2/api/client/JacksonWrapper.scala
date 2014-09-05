@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.benwhitehead.gw2.api.client
+package io.github.benwhitehead.gw2.api.client
 
 import com.fasterxml.jackson.core.`type`.TypeReference
 import com.fasterxml.jackson.databind.{DeserializationFeature, ObjectMapper}

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.benwhitehead.gw2.api.client
+package io.github.benwhitehead.gw2.api.client
 
-import com.github.benwhitehead.gw2.api.model.{Recipe, World}
+import io.github.benwhitehead.gw2.api.model.{Recipe, World}
 import com.twitter.conversions.time.longToTimeableNumber
 import com.twitter.util.{Await, Future}
 import org.scalatest.FreeSpec

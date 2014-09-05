@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.benwhitehead.gw2.api.client
+package io.github.benwhitehead.gw2.api.client
 
 import com.twitter.conversions.time.intToTimeableNumber
 import com.twitter.finagle.builder.ClientBuilder

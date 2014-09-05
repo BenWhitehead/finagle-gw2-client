@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.benwhitehead.gw2.api.client
+package io.github.benwhitehead.gw2.api.client
 
-import com.github.benwhitehead.gw2.api.model._
+import io.github.benwhitehead.gw2.api.model._
 import com.twitter.util.Future
 import java.util.UUID
 

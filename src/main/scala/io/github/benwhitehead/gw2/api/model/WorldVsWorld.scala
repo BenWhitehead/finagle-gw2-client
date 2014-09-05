@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.benwhitehead.gw2.api.model
+package io.github.benwhitehead.gw2.api.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.{UUID, Date}
