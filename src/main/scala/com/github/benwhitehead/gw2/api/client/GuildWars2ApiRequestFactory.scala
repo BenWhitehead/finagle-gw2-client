@@ -16,8 +16,8 @@
 
 package com.github.benwhitehead.gw2.api.client
 
-import com.github.theon.uri.Uri
-import com.github.theon.uri.Uri._
+import com.netaporter.uri.Uri
+import com.netaporter.uri.dsl._
 import com.twitter.finagle.http.RequestBuilder
 import java.util.UUID
 
@@ -30,13 +30,13 @@ class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:
   implicit val defaultLang = _lang("en")
 
   private[this] def get(uri: Uri)(implicit lang: (String, Any)) = {
-    uri.param(lang)
+    uri.addParam(lang._1, lang._2)
     RequestBuilder().url(s"$baseUri/${uri.toString()}".replaceAll("(?<!:)//", "/")).buildGet
   }
   def _lang(lang: String): (String, Any) = "lang" -> lang
 
   def getBuild                                              = get("/build.json")
-  def getColors(lang: String = "en")                        = get("/colors.json")
+  def getColors                                             = get("/colors.json")
   def getFiles                                              = get("/files.json")
   def getWorldNames                                         = get("/world_names.json")
 

@@ -17,6 +17,7 @@
 package com.github.benwhitehead.gw2.api.client
 
 import com.github.benwhitehead.gw2.api.model.{Recipe, World}
+import com.twitter.conversions.time.longToTimeableNumber
 import com.twitter.util.{Await, Future}
 import org.scalatest.FreeSpec
 
@@ -28,25 +29,16 @@ class GuildWars2ApiRestClientSpec extends FreeSpec {
 
   "Guild Wars 2 API client should" - {
     val client = GuildWars2ApiRestClient(hostConnectionLimit = 30)
-    def r[T](f: Future[T]): Future[T] = {
-      f onFailure {
-        case e =>
-          fail(e)
-      }
-    }
 
     "deserialize" - {
-      "World" in {
-        val worlds = r(client[List[World]](rf.getWorldNames)) onSuccess {
-          case worlds: List[World] => println(worlds.mkString(", "))
-        }
-        Await.all(worlds)
-      }
+      // World Names is disable in the API
+//      "World" in {
+//        val worlds = Await.result(client[List[World]](rf.getWorldNames), 10.seconds)
+//        assert(worlds.nonEmpty)
+//      }
       "Recipe 2408 (Berserker's Feathered Boots[11117])" in {
-        val future = r(client[Recipe](rf.getRecipeDetails(2408))) onSuccess {
-          case recipe: Recipe => println(recipe)
-        }
-        Await.all(future)
+        val recipe = Await.result(client[Recipe](rf.getRecipeDetails(2408)), 10.seconds)
+        assert(recipe.recipeId === 2408)
       }
     }
   }
