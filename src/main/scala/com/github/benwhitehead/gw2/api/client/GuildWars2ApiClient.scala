@@ -74,6 +74,20 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     client[Item](rf.getItemDetails(itemId))
   }
 
+  // -------------- Misc ------------------------------------------------------
+
+  def fetchBuild(): Future[Build] = {
+    client[Build](rf.getBuild)
+  }
+
+  def fetchColors(): Future[Map[String, ColorDefinition]] = {
+    unwrap(client[Colors](rf.getColors))
+  }
+
+  def fetchFiles(): Future[Files] = {
+    client[Files](rf.getFiles)
+  }
+
   // -------------- Worlds ----------------------------------------------------
 
   def fetchAllWorlds(): Future[Seq[World]] = {
@@ -83,7 +97,7 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
   // -------------- Maps ------------------------------------------------------
 
   def fetchMapNames(): Future[Seq[MapName]] = {
-    client[Seq[MapName]](rf.getWorldNames)
+    client[Seq[MapName]](rf.getMapNames)
   }
 
   def fetchContinents(): Future[Map[Int, Continent]] = {
@@ -149,7 +163,7 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     client[GuildDetails](rf.getGuildDetails(guildId))
   }
 
-  // -------------- Guilds ----------------------------------------------------
+  // -------------- WvW -------------------------------------------------------
 
   def fetchWorldVsWorldMatches(): Future[Seq[WorldVsWorldMatch]] = {
     unwrap(client[WorldVsWorldMatches](rf.getWvwMatches))

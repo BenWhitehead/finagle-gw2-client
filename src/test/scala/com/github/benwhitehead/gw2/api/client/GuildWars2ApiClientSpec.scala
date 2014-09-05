@@ -97,6 +97,23 @@ class GuildWars2ApiClientSpec extends FreeSpec {
         assert(lionsArch.sectors.size > 0)
       }
 
+      "misc" - {
+        "build" in {
+          val build = await(client.fetchBuild())
+          assert(build.buildId >= 38057)
+        }
+
+        "colors" in {
+          val colors = await(client.fetchColors())
+          assert(colors.nonEmpty)
+        }
+
+        "files" in {
+          val files = await(client.fetchFiles())
+          assert(files !== null)
+        }
+      }
+
       "recipes" in {
         val recipes = Await.result(client.fetchAllRecipeDetails(), 60.seconds)
         assert(recipes.nonEmpty)
