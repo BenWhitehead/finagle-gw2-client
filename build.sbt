@@ -1,4 +1,4 @@
-organization := "com.github.benwhitehead"
+organization := "io.github.benwhitehead.gw2"
 
 name := "finagle-gw2-client"
 
@@ -8,17 +8,17 @@ scalaVersion := "2.10.3"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-javacOptions ++= Seq("-source", "1.6", "-target", "1.6")
+javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
 
-javacOptions in doc := Seq("-source", "1.6")
+javacOptions in doc := Seq("-source", "1.7")
 
 resolvers += "Twitter" at "http://maven.twttr.com/"
 
 libraryDependencies ++= Seq(
-  "com.twitter"                   % "finagle-http_2.10"           % "6.10.0",
-  "com.fasterxml.jackson.module"  % "jackson-module-scala_2.10"   % "2.3.0",
-  "com.github.theon"              %% "scala-uri"                  % "0.3.6",
-  "org.scalatest"                 %% "scalatest"                  % "2.0"     % "test"
+  "com.twitter"                   % "finagle-http_2.10"           % "6.20.0",
+  "com.fasterxml.jackson.module"  % "jackson-module-scala_2.10"   % "2.4.2",
+  "com.netaporter"                %% "scala-uri"                  % "0.4.2",
+  "org.scalatest"                 %% "scalatest"                  % "2.2.2"   % "test"
 )
 
 parallelExecution in Test := true
