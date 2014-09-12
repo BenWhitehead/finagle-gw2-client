@@ -86,4 +86,9 @@ class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:
   def getQuagganIds                                         = get("/v2/quaggans")
   def getQuaggan(id: String)                                = get("/v2/quaggans" / id)
 
+  /* ----- Commerce ----- */
+  def getListingIds                                         = get("/v2/commerce/listings")
+  def getListing(id: Int)                                   = get("/v2/commerce/listings" ? ("ids" -> id))
+  def getListings(ids: Set[Int])                            = get("/v2/commerce/listings" ? ("ids" -> ids.mkString(",")))
+
 }

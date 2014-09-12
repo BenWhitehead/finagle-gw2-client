@@ -19,12 +19,11 @@ package io.github.benwhitehead.gw2.api.client
 import com.twitter.conversions.time.intToTimeableNumber
 import com.twitter.finagle.builder.ClientBuilder
 import com.twitter.finagle.http.Http
-import com.twitter.finagle.{SimpleFilter, Service}
+import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.{Duration, Future}
 import org.jboss.netty.handler.codec.http.HttpResponseStatus._
-import org.jboss.netty.handler.codec.http.{HttpResponse, HttpRequest}
+import org.jboss.netty.handler.codec.http.{HttpRequest, HttpResponse}
 import org.jboss.netty.util.CharsetUtil._
-import scala.Exception
 
 /**
  * @author Ben Whitehead
@@ -67,6 +66,7 @@ object GuildWars2ApiRestClient {
   }
 
   class BadRequest extends Exception
+  class BadGateway extends Exception
   class ForbiddenRequest extends Exception
 
   /**
@@ -79,6 +79,7 @@ object GuildWars2ApiRestClient {
           case OK          => Future.value(response)
           case BAD_REQUEST => Future.exception(new BadRequest)
           case FORBIDDEN   => Future.exception(new ForbiddenRequest)
+          case BAD_GATEWAY => Future.exception(new BadGateway)
           case _           => Future.exception(new Exception(response.getStatus.getReasonPhrase))
         }
       }

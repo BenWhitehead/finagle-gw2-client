@@ -144,6 +144,32 @@ class GuildWars2ApiClientSpec extends FreeSpec {
         }
 
       }
+      
+      "commerce" - {
+        "listings" - {
+
+          "all ids" in {
+            val ids = await(client.fetchCommerceListingIds())
+            assert(ids.nonEmpty)
+          }
+
+          "Mithril Ingot" in {
+            val mithrilIngotListing = await(client.fetchCommerceListing(19684))
+            assert(mithrilIngotListing.id === 19684)
+            assert(mithrilIngotListing.buys.nonEmpty)
+            assert(mithrilIngotListing.sells.nonEmpty)
+          }
+
+          "all listings" in {
+            // Failing with bad gateway, probably being cut off because of too
+            // many requests.
+            val listings = Await.result(client.fetchAllCommerceListings(), 120.seconds)
+            assert(listings.nonEmpty)
+            assert(listings.exists { _.id == 19684 })
+          }
+
+        }
+      }
     }
   }
 }

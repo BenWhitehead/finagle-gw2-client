@@ -199,6 +199,40 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     }
   }
 
+  // -------------- Commerce Listings --------------------------------------------------
+
+  def fetchCommerceListingIds(): Future[Seq[Int]] = {
+    client[Seq[Int]](rf.getListingIds)
+  }
+
+  def fetchCommerceListing(id: Int): Future[Listing] = {
+    fetchCommerceListings(Set(id)) flatMap {
+      case listings: Seq[Listing] => Future.value(listings.head)
+    }
+  }
+
+  def fetchCommerceListings(ids: Set[Int]): Future[Seq[Listing]] = {
+    if (ids.size <= 50) { // 50 is the default page size
+      client[Seq[Listing]](rf.getListings(ids))
+    } else {
+      val idSets = ids.grouped(50).toSeq
+      val f = idSets map {
+        case idSet => fetchCommerceListings(idSet)
+      }
+      val ff = Future.collect(f) flatMap {
+        case listings =>
+          val flat = listings.flatten
+          Future.value(flat)
+      }
+      ff
+    }
+  }
+
+  def fetchAllCommerceListings(): Future[Seq[Listing]] = {
+    fetchCommerceListingIds() flatMap {
+      case ids: Seq[Int] => fetchCommerceListings(ids.toSet)
+    }
+  }
 
   private def unwrap[U](f: Future[Unwrappable[U]]): Future[U] = f flatMap {
     case u: Unwrappable[U] => Future.value(u.flatMap)
