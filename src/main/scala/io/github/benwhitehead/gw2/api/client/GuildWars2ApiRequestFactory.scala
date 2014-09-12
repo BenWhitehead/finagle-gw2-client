@@ -25,7 +25,7 @@ import java.util.UUID
  * @see http://wiki.guildwars2.com/wiki/API
  * @author Ben Whitehead
  */
-class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:443/v1") {
+class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:443/") {
 
   implicit val defaultLang = _lang("en")
 
@@ -35,51 +35,51 @@ class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:
   }
   def _lang(lang: String): (String, Any) = "lang" -> lang
 
-  def getBuild                                              = get("/build.json")
-  def getColors                                             = get("/colors.json")
-  def getFiles                                              = get("/files.json")
-  def getWorldNames                                         = get("/world_names.json")
+  def getBuild                                              = get("/v1/build.json")
+  def getColors                                             = get("/v1/colors.json")
+  def getFiles                                              = get("/v1/files.json")
+  def getWorldNames                                         = get("/v1/world_names.json")
 
   /* ----- Maps ----- */
-  def getMapNames                                           = get("/map_names.json")
+  def getMapNames                                           = get("/v1/map_names.json")
 
-  def getContinents                                         = get("/continents.json")
+  def getContinents                                         = get("/v1/continents.json")
   
-  def getMaps                                               = get("/maps.json")
-  def getMaps(mapId: Int)                                   = get("/maps.json" ? ("map_id" -> mapId))
+  def getMaps                                               = get("/v1/maps.json")
+  def getMaps(mapId: Int)                                   = get("/v1/maps.json" ? ("map_id" -> mapId))
   
-  def getMapFloor(continentId: Int, floor: Int)             = get("/map_floor.json" ? ("continent_id" -> continentId) & "floor" -> floor)
+  def getMapFloor(continentId: Int, floor: Int)             = get("/v1/map_floor.json" ? ("continent_id" -> continentId) & "floor" -> floor)
 
   /* ----- Items ----- */
-  def getItems                                              = get("/items.json")
-  def getItemDetails(itemId: Int)                           = get("/item_details.json" ? ("item_id" -> itemId))
+  def getItems                                              = get("/v1/items.json")
+  def getItemDetails(itemId: Int)                           = get("/v1/item_details.json" ? ("item_id" -> itemId))
 
-  def getRecipes                                            = get("/recipes.json")
-  def getRecipeDetails(recipeId: Int)                       = get("/recipe_details.json" ? ("recipe_id" -> recipeId))
+  def getRecipes                                            = get("/v1/recipes.json")
+  def getRecipeDetails(recipeId: Int)                       = get("/v1/recipe_details.json" ? ("recipe_id" -> recipeId))
 
   /* ----- Events ----- */
-  def getEventNames                                         = get("/event_names.json")
+  def getEventNames                                         = get("/v1/event_names.json")
 
-  def getEventDetails                                       = get("/event_details.json")
-  def getEventDetails(eventId: UUID)                        = get("/event_details.json" ? ("event_id" -> eventId))
+  def getEventDetails                                       = get("/v1/event_details.json")
+  def getEventDetails(eventId: UUID)                        = get("/v1/event_details.json" ? ("event_id" -> eventId))
 
-  def getEvents                                             = get("/events.json")
-  def getEvents(eventId: UUID)                              = get("/events.json" ? ("event_id" -> eventId))
-  def getEvents(eventId: UUID, worldId: Int, mapId: Int)    = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId) & ("map_id" -> mapId))
-  def getEvents(worldId: Int, mapId: Int)                   = get("/events.json" ? ("world_id" -> worldId) & ("map_id" -> mapId))
+  def getEvents                                             = get("/v1/events.json")
+  def getEvents(eventId: UUID)                              = get("/v1/events.json" ? ("event_id" -> eventId))
+  def getEvents(eventId: UUID, worldId: Int, mapId: Int)    = get("/v1/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId) & ("map_id" -> mapId))
+  def getEvents(worldId: Int, mapId: Int)                   = get("/v1/events.json" ? ("world_id" -> worldId) & ("map_id" -> mapId))
 
-  def getEventsForWorld(worldId: Int)                       = get("/events.json" ? ("world_id" -> worldId))
-  def getEventsForMap(mapId: Int)                           = get("/events.json" ? ("map_id" -> mapId))
-  def getEventsForWorld(eventId: UUID, worldId: Int)        = get("/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId))
-  def getEventsForMap(eventId: UUID, mapId: Int)            = get("/events.json" ? ("event_id" -> eventId) & ("map_id" -> mapId))
+  def getEventsForWorld(worldId: Int)                       = get("/v1/events.json" ? ("world_id" -> worldId))
+  def getEventsForMap(mapId: Int)                           = get("/v1/events.json" ? ("map_id" -> mapId))
+  def getEventsForWorld(eventId: UUID, worldId: Int)        = get("/v1/events.json" ? ("event_id" -> eventId) & ("world_id" -> worldId))
+  def getEventsForMap(eventId: UUID, mapId: Int)            = get("/v1/events.json" ? ("event_id" -> eventId) & ("map_id" -> mapId))
 
   /* ----- Guilds ----- */
-  def getGuildDetails(guildId: UUID)                        = get("/guild_details.json" ? ("guild_id" -> guildId))
-  def getGuildDetails(guildName: String)                    = get("/guild_details.json" ? ("guild_name" -> guildName))
+  def getGuildDetails(guildId: UUID)                        = get("/v1/guild_details.json" ? ("guild_id" -> guildId))
+  def getGuildDetails(guildName: String)                    = get("/v1/guild_details.json" ? ("guild_name" -> guildName))
 
   /* ----- WvW ----- */
-  def getWvwMatches                                         = get("/wvw/matches.json")
-  def getWvwMatchDetails(matchId: String)                   = get("/wvw/match_details.json" ? ("match_id" -> matchId))
-  def getWvwObjectiveNames                                  = get("/wvw/objective_names.json")
+  def getWvwMatches                                         = get("/v1/wvw/matches.json")
+  def getWvwMatchDetails(matchId: String)                   = get("/v1/wvw/match_details.json" ? ("match_id" -> matchId))
+  def getWvwObjectiveNames                                  = get("/v1/wvw/objective_names.json")
 
 }
