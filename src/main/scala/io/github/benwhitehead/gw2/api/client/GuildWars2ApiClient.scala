@@ -177,6 +177,29 @@ class GuildWars2ApiClient(client: GuildWars2ApiRestClient, rf: GuildWars2ApiRequ
     client[Seq[WorldVsWorldObjectName]](rf.getWvwObjectiveNames)
   }
 
+  // -------------- Quaggans --------------------------------------------------
+
+  def fetchQuagganIds(): Future[Seq[String]] = {
+    client[Seq[String]](rf.getQuagganIds)
+  }
+
+  def fetchQuaggans(ids: Seq[String]) = {
+    Future.collect(
+      ids map { id => fetchQuaggan(id) }
+    )
+  }
+
+  def fetchQuaggan(id: String): Future[Quaggan] = {
+    client[Quaggan](rf.getQuaggan(id))
+  }
+
+  def fetchAllQuaggans(): Future[Seq[Quaggan]] = {
+    fetchQuagganIds() flatMap {
+      case quagganIds: Seq[String] => fetchQuaggans(quagganIds)
+    }
+  }
+
+
   private def unwrap[U](f: Future[Unwrappable[U]]): Future[U] = f flatMap {
     case u: Unwrappable[U] => Future.value(u.flatMap)
   }

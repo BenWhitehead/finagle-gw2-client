@@ -123,6 +123,27 @@ class GuildWars2ApiClientSpec extends FreeSpec {
         val items = Await.result(client.fetchAllItemDetails(), 60.seconds)
         assert(items.nonEmpty)
       }
+
+      "quaggans" - {
+
+        "all ids" in {
+          val ids = await(client.fetchQuagganIds())
+          assert(ids.nonEmpty)
+        }
+
+        "specific quaggan" in {
+          val box = await(client.fetchQuaggan("box"))
+          assert(box.id === "box")
+          assert(box.url === "https://static.staticwars.com/quaggans/box.jpg")
+        }
+
+        "all quaggen" in {
+          val quaggen = await(client.fetchAllQuaggans())
+          assert(quaggen.nonEmpty)
+          assert(quaggen.exists { _.id == "box" })
+        }
+
+      }
     }
   }
 }

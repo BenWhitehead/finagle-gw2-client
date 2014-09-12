@@ -82,4 +82,8 @@ class GuildWars2ApiRequestFactory(baseUri: String = "https://api.guildwars2.com:
   def getWvwMatchDetails(matchId: String)                   = get("/v1/wvw/match_details.json" ? ("match_id" -> matchId))
   def getWvwObjectiveNames                                  = get("/v1/wvw/objective_names.json")
 
+  /* ----- Quaggans ----- */
+  def getQuagganIds                                         = get("/v2/quaggans")
+  def getQuaggan(id: String)                                = get("/v2/quaggans" / id)
+
 }
